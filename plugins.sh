@@ -10,14 +10,14 @@
 
 set -e
 
-REF=/usr/share/jenkins/ref/plugins
+REF=$JENKINS_REFDIR/plugins
 mkdir -p $REF
 
 while read spec || [ -n "$spec" ]; do
     plugin=(${spec//:/ });
     [[ ${plugin[0]} =~ ^# ]] && continue
     [[ ${plugin[0]} =~ ^\s*$ ]] && continue
-    [[ -z ${plugin[1]} ]] && plugin[1]="latest"
+    [[ -z "${plugin[1]}" ]] && plugin[1]="latest"
     echo "Downloading ${plugin[0]}:${plugin[1]}"
 
     if [ -z "$JENKINS_UC_DOWNLOAD" ]; then
