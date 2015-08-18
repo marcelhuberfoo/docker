@@ -16,7 +16,8 @@ ENV UNAME=jenkins \
     JENKINS_PORT=8080 \
     JENKINS_SLAVE_AGENT_PORT=50000 \
     JENKINS_UC=https://updates.jenkins-ci.org \
-    JENKINS_OPTS="--webroot=$JENKINS_WEBROOT --httpPort=$JENKINS_PORT"
+    JENKINS_OPTS='--webroot=$JENKINS_WEBROOT --httpPort=$JENKINS_PORT' \
+    JAVA_OPTS="-Djenkins.security.ArtifactsPermission=true -Djava.io.tmpdir=/var/tmp"
 
 # Jenkins is ran with user `$UNAME`, uid = $UID
 # If you bind mount a volume from host/volume from a data container, 
@@ -27,7 +28,7 @@ RUN groupadd -g $GID $GNAME && \
 # `$JENKINS_REFDIR/` contains all reference configuration we want 
 # to set on a fresh new installation. Use it to bundle additional plugins 
 # or config file with your custom jenkins Docker image.
-RUN mkdir -p $JENKINS_INSTALLDIR $JENKINS_REFDIR/init.groovy.d $JENKINS_WEBROOT
+RUN mkdir -p $JENKINS_INSTALLDIR $JENKINS_REFDIR/init.groovy.d $JENKINS_WEBROOT $JENKINS_BACKUPDIR
 
 # Use tini as subreaper in Docker container to adopt zombie processes 
 RUN curl -fL https://github.com/krallin/tini/releases/download/v0.5.0/tini-static -o /bin/tini && chmod +x /bin/tini
@@ -36,13 +37,12 @@ COPY init.groovy $JENKINS_REFDIR/init.groovy.d/tcp-slave-agent-port.groovy
 
 ADD https://updates.jenkins-ci.org/latest/jenkins.war $JENKINS_INSTALLDIR/jenkins.war
 
-RUN chown -R $UNAME:$GNAME "$JENKINS_HOME" $JENKINS_REFDIR $JENKINS_INSTALLDIR
+RUN chown -R $UNAME:$GNAME $JENKINS_HOME $JENKINS_REFDIR $JENKINS_INSTALLDIR $JENKINS_BACKUPDIR $JENKINS_WEBROOT
 
 # Jenkins home directory is a volume, so configuration and build history 
 # can be persisted and survive image upgrades
-VOLUME $JENKINS_HOME
-VOLUME $JENKINS_REFDIR
-VOLUME $JENKINS_BACKUPDIR
+VOLUME $JENKINS_HOME $JENKINS_REFDIR $JENKINS_BACKUPDIR
+WORKDIR $JENKINS_HOME
 
 # for main web interface:
 EXPOSE $JENKINS_PORT
