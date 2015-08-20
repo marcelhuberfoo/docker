@@ -8,25 +8,24 @@ set -e
 # can then change this, upgrade plugins, etc.
 copy_reference_file() {
   f=${1%/} 
-  echo " processing [$f]" >> $REFCOPY_LOGFILE
   rel=${f#$JENKINS_REFDIR/}
   dir=$(dirname ${rel})
-  if [[ ! -e $JENKINS_HOME/${rel} ]] 
-  then
-    echo "  COPYING [$rel] to [$JENKINS_HOME/$dir]" >> $REFCOPY_LOGFILE
-    mkdir -p $JENKINS_HOME/$dir
-    cp -p $JENKINS_REFDIR/$rel $JENKINS_HOME/$dir;
-    # pin plugins on initial copy
-    [[ $rel == plugins/*.jpi ]] && touch $JENKINS_HOME/${rel}.pinned
-  fi; 
+  destdir=$JENKINS_HOME/${dir}
+  destfile=$JENKINS_HOME/${rel}
+  pinfile=${destfile}.pinned
+  mkdir -p $destdir
+  cp -puv $f $destdir
+  # pin plugins on initial copy
+  [[ $rel == plugins/*.jpi && ! -f $pinfile ]] && touch $pinfile
 }
 export -f copy_reference_file
-echo "--- Copying files at $(date)" >> $REFCOPY_LOGFILE
-find $JENKINS_REFDIR/ -type f -exec bash -c "copy_reference_file '{}'" \;
+gosu $UNAME bash -c 'echo "--- BEGIN Copying files at $(date)" | tee -a $REFCOPY_LOGFILE'
+find $JENKINS_REFDIR/ -type f -exec gosu $UNAME bash -c "copy_reference_file '{}' | tee -a $REFCOPY_LOGFILE" \;
+gosu $UNAME bash -c 'echo "--- END   Copying files at $(date)" | tee -a $REFCOPY_LOGFILE'
 
 # if `docker run` first argument start with `--` the user is passing jenkins launcher arguments
 if [[ $# -lt 1 ]] || [[ "$1" == "--"* ]]; then
-  eval exec java $JAVA_OPTS -jar $JENKINS_INSTALLDIR/jenkins.war $JENKINS_OPTS "$@"
+  eval exec gosu $UNAME java $JAVA_OPTS -jar $JENKINS_INSTALLDIR/jenkins.war $JENKINS_OPTS "$@"
 fi
 
 # As argument is not jenkins, assume user want to run his own process, for sample a `bash` shell to explore this image
