@@ -1,4 +1,4 @@
-# Latest Jenkins Docker image
+# Latest Jenkins Docker image [![](https://badge.imagelayers.io/marcelhuberfoo/jenkins.svg)](https://imagelayers.io/?images=marcelhuberfoo/jenkins 'Get your own badge on imagelayers.io')
 
 The Jenkins Continuous Integration and Delivery server.
 
