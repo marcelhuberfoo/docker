@@ -17,10 +17,6 @@ ENV JENKINS_HOME=/var/lib/jenkins \
     JENKINS_OPTS='--webroot=$JENKINS_WEBROOT --httpPort=$JENKINS_PORT' \
     JAVA_OPTS="-Djenkins.security.ArtifactsPermission=true -Djava.io.tmpdir=/var/tmp"
 
-# Jenkins is run with user `$UNAME`, uid = $UID
-# If you bind mount a volume from host/volume from a data container, 
-# ensure you use same uid
-
 # `$JENKINS_REFDIR/` contains all reference configuration we want 
 # to set on a fresh new installation. Use it to bundle additional plugins 
 # or config file with your custom jenkins Docker image.
@@ -32,8 +28,15 @@ ADD http://mirrors.jenkins-ci.org/war/latest/jenkins.war $JENKINS_INSTALLDIR/jen
 
 RUN chown -R $UNAME:$GNAME $JENKINS_HOME $JENKINS_REFDIR $JENKINS_INSTALLDIR $JENKINS_BACKUPDIR $JENKINS_WEBROOT
 
+# As we use the base containers user to work with, set it's home directory
+# to $JENKINS_HOME to also persist modifications for this user (~/.ssh for example)
+RUN usermod --home $JENKINS_HOME $UNAME
+
 # Jenkins home directory is a volume, so configuration and build history 
 # can be persisted and survive image upgrades
+# Jenkins is run with user `$UNAME`, uid = $UID
+# If you bind mount a volume from host/volume from a data container,
+# ensure you use same uid
 VOLUME ["$JENKINS_HOME", "$JENKINS_REFDIR", "$JENKINS_BACKUPDIR"]
 WORKDIR $JENKINS_HOME
 
