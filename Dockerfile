@@ -34,7 +34,7 @@ RUN usermod --home $JENKINS_HOME $UNAME
 
 # Jenkins home directory is a volume, so configuration and build history 
 # can be persisted and survive image upgrades
-# Jenkins is run with user `$UNAME`, uid = $UID
+# Jenkins is run with as user `$UNAME`
 # If you bind mount a volume from host/volume from a data container,
 # ensure you use same uid
 VOLUME ["$JENKINS_HOME", "$JENKINS_REFDIR", "$JENKINS_BACKUPDIR"]
