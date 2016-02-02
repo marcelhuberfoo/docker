@@ -19,6 +19,8 @@ copy_reference_file() {
   [[ $rel == plugins/*.jpi && ! -f $pinfile ]] && touch $pinfile
 }
 export -f copy_reference_file
+# ensure correct permissions on filesystems
+chown -R $UNAME:$GNAME $JENKINS_HOME $JENKINS_REFDIR $JENKINS_INSTALLDIR $JENKINS_BACKUPDIR $JENKINS_WEBROOT
 gosu $UNAME bash -c 'echo "--- BEGIN Copying files at $(date)" | tee -a $REFCOPY_LOGFILE'
 find $JENKINS_REFDIR/ -type f -exec gosu $UNAME bash -c "copy_reference_file '{}' | tee -a $REFCOPY_LOGFILE" \;
 gosu $UNAME bash -c 'echo "--- END   Copying files at $(date)" | tee -a $REFCOPY_LOGFILE'
