@@ -1,0 +1,33 @@
+groups:
+  default:
+  - jenkins
+containers:
+  jenkins: &cref
+    build:
+      context: .
+      file: Dockerfile
+    image: marcelhuberfoo/jenkins
+    run: &crefrun
+      detach: false
+      env:
+      - JAVA_OPTS=-Djenkins.security.ArtifactsPermission=true -Xmx2048m
+      - MALLOC_ARENA_MAX=1
+#      - VIRTUAL_HOST=jenkins.example.org
+#      - VIRTUAL_PORT=8080
+#      - LETSENCRYPT_HOST=jenkins.example.org
+#      - LETSENCRYPT_EMAIL=jenkins@example.org
+      stop-signal: SIGTERM
+      volume:
+      - coast-jenkins-data_refdata:/refdata:rw
+      - coast-jenkins-data_var_backup_jenkins:/var/backup/jenkins:rw
+      - coast-jenkins-data_var_lib_jenkins:/var/lib/jenkins:rw
+      interactive: true
+      tty: true
+    exec:
+      interactive: true
+      tty: true
+  cshell: { <<: *cref, run: { <<: *crefrun, detach, entrypoint: /bin/bash, tty: true, interactive: true } }
+volumes:
+  coast-jenkins-data_refdata: null
+  coast-jenkins-data_var_backup_jenkins: null
+  coast-jenkins-data_var_lib_jenkins: null
