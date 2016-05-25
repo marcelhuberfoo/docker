@@ -6,6 +6,7 @@ USER root
 RUN pacman -Syy --noconfirm python2 git doxygen graphviz gtk2 openssh && \
     printf "y\\ny\\n" | pacman -Scc
 
+ARG JENKINS_VERSION=2.6
 ENV JENKINS_HOME=/var/lib/jenkins \
     JENKINS_INSTALLDIR=/usr/share/java/jenkins \
     JENKINS_BACKUPDIR=/var/backup/jenkins \
@@ -13,9 +14,10 @@ ENV JENKINS_HOME=/var/lib/jenkins \
     JENKINS_REFDIR=/refdata \
     JENKINS_PORT=8080 \
     JENKINS_SLAVE_AGENT_PORT=50000 \
-    JENKINS_UC=https://updates.jenkins-ci.org \
+    JENKINS_UC=https://updates.jenkins.io \
+    JENKINS_VERSION=$JENKINS_VERSION \
     JENKINS_OPTS='--webroot=$JENKINS_WEBROOT --httpPort=$JENKINS_PORT' \
-    JAVA_OPTS="-Djenkins.security.ArtifactsPermission=true -Djava.io.tmpdir=/var/tmp"
+    JAVA_OPTS="-Djenkins.security.ArtifactsPermission=true"
 
 # `$JENKINS_REFDIR/` contains all reference configuration we want 
 # to set on a fresh new installation. Use it to bundle additional plugins 
@@ -24,7 +26,9 @@ RUN mkdir -p $JENKINS_INSTALLDIR $JENKINS_REFDIR/init.groovy.d $JENKINS_WEBROOT 
 
 COPY init.groovy $JENKINS_REFDIR/init.groovy.d/tcp-slave-agent-port.groovy
 
-ADD http://mirrors.jenkins-ci.org/war/latest/jenkins.war $JENKINS_INSTALLDIR/jenkins.war
+# could use ADD but this one does not check Last-Modified header 
+# see https://github.com/docker/docker/issues/8331
+RUN curl -fsSL http://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${JENKINS_VERSION}/jenkins-war-${JENKINS_VERSION}.war -o $JENKINS_INSTALLDIR/jenkins.war
 
 RUN chown -R $UNAME:$GNAME $JENKINS_HOME $JENKINS_REFDIR $JENKINS_INSTALLDIR $JENKINS_BACKUPDIR $JENKINS_WEBROOT
 
