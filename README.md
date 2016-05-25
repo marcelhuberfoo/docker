@@ -1,4 +1,8 @@
-# Latest Jenkins Docker image [![](https://badge.imagelayers.io/marcelhuberfoo/jenkins.svg)](https://imagelayers.io/?images=marcelhuberfoo/jenkins 'Get your own badge on imagelayers.io')
+[![](https://badge.imagelayers.io/marcelhuberfoo/jenkins.svg)](https://imagelayers.io/?images=marcelhuberfoo/jenkins 'Get your own badge on imagelayers.io') 
+[![CircleCI](https://circleci.com/gh/marcelhuberfoo/docker-jenkins.svg?style=svg)](https://circleci.com/gh/marcelhuberfoo/docker-jenkins)
+[![Stories in Ready](https://badge.waffle.io/marcelhuberfoo/docker-jenkins.svg?label=ready&title=Ready)](http://waffle.io/marcelhuberfoo/docker-jenkins)
+
+# Latest Jenkins Docker image 
 
 The Jenkins Continuous Integration and Delivery server.
 
