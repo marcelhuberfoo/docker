@@ -25,5 +25,5 @@ deployment:
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push $docker_image
-      - docker tag $docker_image $docker_image:$(docker run -it --rm --entrypoint /bin/sh $docker_image -c 'echo $JENKINS_VERSION')
-      - docker push $docker_image:$(docker run -it --rm --entrypoint /bin/sh $docker_image -c 'echo $JENKINS_VERSION')
+      - docker tag $docker_image $docker_image:$(docker run -it --rm --entrypoint /bin/sh $docker_image -c 'echo -n $JENKINS_VERSION')
+      - docker push $docker_image:$(docker run -it --rm --entrypoint /bin/sh $docker_image -c 'echo -n $JENKINS_VERSION')
