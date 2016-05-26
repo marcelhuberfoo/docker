@@ -7,6 +7,7 @@ RUN pacman -Syy --noconfirm python2 git doxygen graphviz gtk2 openssh && \
     printf "y\\ny\\n" | pacman -Scc
 
 ARG JENKINS_VERSION=2.6
+ARG JENKINS_PKGREL=1
 ENV JENKINS_HOME=/var/lib/jenkins \
     JENKINS_INSTALLDIR=/usr/share/java/jenkins \
     JENKINS_BACKUPDIR=/var/backup/jenkins \
@@ -16,6 +17,7 @@ ENV JENKINS_HOME=/var/lib/jenkins \
     JENKINS_SLAVE_AGENT_PORT=50000 \
     JENKINS_UC=https://updates.jenkins.io \
     JENKINS_VERSION=$JENKINS_VERSION \
+    JENKINS_PKGREL=$JENKINS_PKGREL \
     JENKINS_OPTS='--webroot=$JENKINS_WEBROOT --httpPort=$JENKINS_PORT' \
     JAVA_OPTS="-Djenkins.security.ArtifactsPermission=true"
 

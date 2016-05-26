@@ -26,6 +26,7 @@ containers:
     exec:
       interactive: true
       tty: true
+  jenkins-local: { <<: *cref, run: { <<: *crefrun, publish: ['8080:8080', '50000:50000'] } }
   cshell: { <<: *cref, run: { <<: *crefrun, detach, entrypoint: /bin/bash, tty: true, interactive: true } }
 volumes:
   coast-jenkins-data_refdata: null
