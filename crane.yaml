@@ -6,8 +6,6 @@ containers:
     build:
       context: .
       file: Dockerfile
-      build-arg:
-      - JENKINS_VERSION=$JENKINS_VERSION
     image: marcelhuberfoo/jenkins
     run: &crefrun
       detach: false

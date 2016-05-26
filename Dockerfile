@@ -24,6 +24,9 @@ ENV JENKINS_HOME=/var/lib/jenkins \
 # or config file with your custom jenkins Docker image.
 RUN mkdir -p $JENKINS_INSTALLDIR $JENKINS_REFDIR/init.groovy.d $JENKINS_WEBROOT $JENKINS_BACKUPDIR $JENKINS_HOME
 
+# Indicate jenkins is fully configured for 2.x releases
+RUN echo 2.0 > $JENKINS_REFDIR/jenkins.install.UpgradeWizard.state
+
 COPY init.groovy $JENKINS_REFDIR/init.groovy.d/tcp-slave-agent-port.groovy
 
 # could use ADD but this one does not check Last-Modified header 
