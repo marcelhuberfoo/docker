@@ -7,7 +7,7 @@ RUN pacman -Syy --noconfirm python2 git doxygen graphviz gtk2 openssh && \
     printf "y\\ny\\n" | pacman -Scc
 
 ARG JENKINS_VERSION=2.6
-ARG JENKINS_PKGREL=1
+ARG JENKINS_PKGREL=2
 ENV JENKINS_HOME=/var/lib/jenkins \
     JENKINS_INSTALLDIR=/usr/share/java/jenkins \
     JENKINS_BACKUPDIR=/var/backup/jenkins \
