@@ -3,10 +3,10 @@ MAINTAINER Marcel Huber <marcelhuberfoo@gmail.com>
 
 USER root
 
-RUN pacman -Syy --noconfirm python2 git doxygen graphviz gtk2 openssh && \
+RUN pacman -Syy --noconfirm python2 git doxygen graphviz gtk2 openssh wget && \
     printf "y\\ny\\n" | pacman -Scc
 
-ARG JENKINS_VERSION=2.45
+ARG JENKINS_VERSION=2.46
 ARG JENKINS_PKGREL=1
 ENV JENKINS_HOME=/var/lib/jenkins \
     JENKINS_INSTALLDIR=/usr/share/java/jenkins \
@@ -19,7 +19,8 @@ ENV JENKINS_HOME=/var/lib/jenkins \
     JENKINS_VERSION=$JENKINS_VERSION \
     JENKINS_PKGREL=$JENKINS_PKGREL \
     JENKINS_OPTS='--webroot=$JENKINS_WEBROOT --httpPort=$JENKINS_PORT' \
-    JAVA_OPTS="-Djenkins.security.ArtifactsPermission=true"
+    JAVA_OPTS="-Djenkins.security.ArtifactsPermission=true" \
+    LC_ALL=en_US.UTF-8
 
 # `$JENKINS_REFDIR/` contains all reference configuration we want 
 # to set on a fresh new installation. Use it to bundle additional plugins 
@@ -59,4 +60,3 @@ COPY jenkins.sh /usr/local/bin/jenkins.sh
 ENV REFCOPY_LOGFILE=$JENKINS_HOME/reference_copy.log
 
 ENTRYPOINT ["/usr/local/bin/jenkins.sh"]
-
